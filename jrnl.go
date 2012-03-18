@@ -1,6 +1,5 @@
 // Copyright 2012 CIEX, Incorporated
 
-
 // jrnl is a simple tool to record project time
 // Time-stamped records are written to a journal file,
 // which will later be processed for reports.
@@ -11,6 +10,8 @@ import (
 	"fmt"
 	. "os"
 	"time"
+
+//		"strings"
 )
 
 // Cheap integer to fixed-width decimal ASCII.  Give a negative width to avoid zero-padding.
@@ -30,6 +31,12 @@ func itoa(buf *[]byte, i int, wid int) {
 		b[bp] = byte(u%10) + '0'
 	}
 	*buf = append(*buf, b[bp:]...)
+}
+
+func appendString(buf *[]byte, addme string) {
+	for ix := 0; ix < len(addme); ix++ {
+		*buf = append(*buf, addme[ix])
+	}
 }
 
 func main() {
@@ -60,19 +67,20 @@ func main() {
 	if len(journalenv) > 0 {
 		journalfile = journalenv
 	}
-	fmt.Printf("Journal file is %s\n", journalfile)
 	fo, error := OpenFile(journalfile, O_APPEND|O_WRONLY|O_CREATE, 0666)
 	if error != nil {
 		fmt.Printf("error is %s\n", error)
 		Exit(-1)
 	}
 	for i := 0; i < flag.NArg(); i++ {
-		boo := []byte(flag.Arg(i))
-		for ix := 0; ix < len(boo); ix++ {
-			buf = append(buf, boo[ix])
-		}
+		appendString(&buf, flag.Arg(i))
 		buf = append(buf, ' ')
 	}
+	var host, _ = Hostname()
+		appendString(&buf, host)
+		buf = append(buf, ':')
+	var cwd, _ = Getwd()
+	appendString(&buf, cwd)
 	buf = append(buf, '\n')
 	fo.Write(buf)
 	fo.Close()
