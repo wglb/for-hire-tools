@@ -39,6 +39,11 @@ func appendString(buf *[]byte, addme string) {
 	}
 }
 
+func itoaap(buf *[]byte, i int, wid int, trail byte) {
+	itoa(buf, i, wid)
+	*buf = append(*buf, trail)
+}
+
 func main() {
 	now := time.Now()
 	var buf []byte
@@ -46,21 +51,15 @@ func main() {
 	hour, min, sec := now.Clock()
 	micro := now.Nanosecond() / 1e3
 
-	itoa(&buf, year, 4)
-	buf = append(buf, '-')
-	itoa(&buf, int(month), 2)
-	buf = append(buf, '-')
-	itoa(&buf, day, 2)
-	buf = append(buf, ' ')
+	itoaap(&buf, year, 4, '-')
+	itoaap(&buf, int(month), 2, '-')
+	itoaap(&buf, int(day), 2, ' ')
 
-	itoa(&buf, hour, 2)
-	buf = append(buf, ':')
-	itoa(&buf, min, 2)
-	buf = append(buf, ':')
-	itoa(&buf, sec, 2)
-	buf = append(buf, ':')
-	itoa(&buf, micro, 6)
-	buf = append(buf, ' ')
+	itoaap(&buf, hour, 2, ':')
+	itoaap(&buf, min, 2, ':')
+	itoaap(&buf, sec, 2, '.')
+	itoaap(&buf, micro, 6, ' ')
+
 	flag.Parse()
 	journalfile := "/home/consultant/journalfile.txt"
 	journalenv := Getenv("JRNLPATH")
@@ -77,8 +76,8 @@ func main() {
 		buf = append(buf, ' ')
 	}
 	var host, _ = Hostname()
-		appendString(&buf, host)
-		buf = append(buf, ':')
+	appendString(&buf, host)
+	buf = append(buf, ':')
 	var cwd, _ = Getwd()
 	appendString(&buf, cwd)
 	buf = append(buf, '\n')
