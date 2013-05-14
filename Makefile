@@ -4,7 +4,7 @@ all:
 install: ~/bin/jrnl
 
 ~/bin/jrnl: jrnl
-	cp -v jrnl ~/bin/jrnl
+	cp -vb jrnl ~/bin/jrnl
 jrnl: jrnl.go
 	go build jrnl.go
 
