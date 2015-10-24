@@ -11,12 +11,12 @@ import (
 	. "os"
 	"time"
 
-//		"strings"
+	//		"strings"
 )
 
 // Cheap integer to fixed-width decimal ASCII.  Give a negative width to avoid zero-padding.
 // Knows the buffer has capacity.
-// From Logger.
+// From Logger. Is this now available?
 func itoa(buf *[]byte, i int, wid int) {
 	var u uint = uint(i)
 	if u == 0 && wid <= 1 {
